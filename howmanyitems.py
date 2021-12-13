@@ -1,7 +1,5 @@
 import os
 import json
-import pprint
-from builtins import all
 
 from recipecraftingshaped import *
 
@@ -25,23 +23,11 @@ def pred_type(expected_type):
     return pred_key("type", expected_type)
 
 
-def reduce_predicates(reduce, *predicates):
-    return lambda elem: reduce(map(lambda pred: pred(elem), predicates))
-
-
-def filter_crafting_recipes(recipes):
-    predicate = reduce_predicates(
-        any,
-        pred_type("minecraft:crafting_shaped"),
-        pred_type("minecraft:crafting_shapeless"),
-    )
-    return list(filter(predicate, recipes))
-
-
 def main():
-    recipes = load_recipes_json()
-    crafting_recipes = filter_crafting_recipes(recipes)
-    print(f"There are {len(crafting_recipes)} craftable items in Minecraft 1.18")
+    recipes_json = load_recipes_json()
+    shaped_crafting_recipes_json = filter(pred_type("minecraft:crafting_shaped"), recipes_json)
+    shaped_crafting_recipes = list(map(RecipeCraftingShaped.from_json, shaped_crafting_recipes_json))
+    print(len(shaped_crafting_recipes))
 
 
 if __name__ == "__main__":
