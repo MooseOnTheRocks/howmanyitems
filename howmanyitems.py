@@ -28,6 +28,7 @@ def main():
     shaped_crafting_recipes_json = filter(pred_type("minecraft:crafting_shaped"), recipes_json)
     shaped_crafting_recipes = list(map(RecipeCraftingShaped.from_json, shaped_crafting_recipes_json))
     print(len(shaped_crafting_recipes))
+    print(shaped_crafting_recipes[0])
 
 
 if __name__ == "__main__":

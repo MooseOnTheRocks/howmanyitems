@@ -1,7 +1,7 @@
 class RecipeCraftingShaped:
     TYPE = "minecraft:crafting_shaped"
 
-    def __init__(self, pattern, key, result):
+    def __init__(self, result, key, pattern):
         # Resulting minecraft item.
         self.result = result
         # A map from characters in pattern to items in minecraft.
