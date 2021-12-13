@@ -1,17 +1,9 @@
 import os
 import json
 import pprint
+from builtins import all
 
-
-class Recipe:
-    def __init__(self):
-        pass
-
-    @staticmethod
-    def from_json(recipe_json):
-        print("from_json:")
-        print(recipe_json)
-        return Recipe()
+from recipecraftingshaped import *
 
 
 def load_recipes_json():
@@ -25,21 +17,31 @@ def load_recipes_json():
     return all_recipes
 
 
+def pred_key(key, value):
+    return lambda obj: obj[key] == value
+
+
+def pred_type(expected_type):
+    return pred_key("type", expected_type)
+
+
+def reduce_predicates(reduce, *predicates):
+    return lambda elem: reduce(map(lambda pred: pred(elem), predicates))
+
+
+def filter_crafting_recipes(recipes):
+    predicate = reduce_predicates(
+        any,
+        pred_type("minecraft:crafting_shaped"),
+        pred_type("minecraft:crafting_shapeless"),
+    )
+    return list(filter(predicate, recipes))
+
+
 def main():
     recipes = load_recipes_json()
-    # first = recipes[0]
-    # rec = Recipe.from_json(first)
-    # print(rec)
-    all_types = (recipe["type"] for recipe in recipes)
-    unique_types = set(all_types)
-    print(unique_types)
-    print("all recipes:", len(recipes))
-    print("minecraft:crafting_shaped")
-    num_shaped = sum(r["type"] == "minecraft:crafting_shaped" for r in recipes)
-    print(num_shaped)
-    print("minecraft:crafting_shapeless")
-    num_shapeless = sum(r["type"] == "minecraft:crafting_shapeless" for r in recipes)
-    print(num_shapeless)
+    crafting_recipes = filter_crafting_recipes(recipes)
+    print(f"There are {len(crafting_recipes)} craftable items in Minecraft 1.18")
 
 
 if __name__ == "__main__":
